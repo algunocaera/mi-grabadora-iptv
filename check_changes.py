@@ -1,28 +1,33 @@
 import requests
 import os
 
-# Configuración
+# --- CONFIGURACIÓN ---
 REPO_OWNER = "LaQuay"
 REPO_NAME = "TDTChannels"
 FILE_PATH = "TELEVISION.md"
-STATE_FILE = "last_sha.txt" # Archivo para guardar el último cambio visto
+STATE_FILE = "last_sha.txt"
+
+# Esta línea lee la URL secreta que guardaste en Settings de GitHub
+SLACK_URL = os.getenv("SLACK_WEBHOOK_URL")
+
+def enviar_slack(mensaje):
+    if SLACK_URL:
+        payload = {"text": mensaje}
+        try:
+            response = requests.post(SLACK_URL, json=payload)
+            response.raise_for_status()
+            print("Mensaje enviado a Slack correctamente.")
+        except Exception as e:
+            print(f"Error al enviar a Slack: {e}")
+    else:
+        print("Error: No se encontró la URL de Slack en los Secretos de GitHub.")
 
 def get_latest_commit_sha():
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits?path={FILE_PATH}&per_page=1"
     response = requests.get(url)
     return response.json()[0]['sha']
 
-def notify_and_update(sha):
-    # 1. Aquí envías la notificación (ejemplo Telegram)
-    print(f"¡Cambio detectado! Nuevo SHA: {sha}")
-    # Puedes usar requests.post para enviar el aviso a tu móvil o app
-    
-    # 2. Aquí podrías descargar el contenido real del m3u8
-    # raw_url = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/master/{FILE_PATH}"
-    # content = requests.get(raw_url).text
-    # enviar_a_mi_app(content)
-
-# Lógica principal
+# --- LÓGICA PRINCIPAL ---
 latest_sha = get_latest_commit_sha()
 
 if os.path.exists(STATE_FILE):
@@ -32,8 +37,18 @@ else:
     last_sha = ""
 
 if latest_sha != last_sha:
-    notify_and_update(latest_sha)
+    # Definimos el mensaje que verás en Slack
+    texto_aviso = (
+        f"🚀 *¡Cambio detectado en TDTChannels!*\n"
+        f"Se han actualizado canales en el archivo `{FILE_PATH}`.\n"
+        f"Ver detalles del cambio: https://github.com/{REPO_OWNER}/{REPO_NAME}/commits/master/{FILE_PATH}"
+    )
+    
+    print(f"Cambio detectado: {latest_sha}")
+    enviar_slack(texto_aviso)
+    
+    # Guardamos el nuevo SHA para no repetir el aviso
     with open(STATE_FILE, "w") as f:
         f.write(latest_sha)
 else:
-    print("Sin cambios.")
+    print("Sin cambios. Todo sigue igual.")
