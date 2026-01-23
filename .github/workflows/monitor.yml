@@ -19,6 +19,8 @@ jobs:
         run: pip install requests
         
       - name: Ejecutar script
+        env:          
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python check_changes.py
         
       - name: Guardar estado si hubo cambios
