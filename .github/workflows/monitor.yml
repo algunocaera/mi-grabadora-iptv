@@ -1,0 +1,30 @@
+name: Monitor IPTVChannels
+on:
+  schedule:
+    - cron: '0 * * * *' # Se ejecuta cada hora
+  workflow_dispatch: # Permite ejecutarlo manualmente
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Instalar dependencias
+        run: pip install requests
+        
+      - name: Ejecutar script
+        run: python check_changes.py
+        
+      - name: Guardar estado si hubo cambios
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add last_sha.txt
+          git commit -m "Actualizar SHA de TDTChannels" || exit 0
+          git push
