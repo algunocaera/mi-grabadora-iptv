@@ -3,7 +3,7 @@ import os
 
 # --- CONFIGURACIÓN ---
 REPO_OWNER = "LaQuay"
-REPO_NAME = "TDTChannels"
+REPO_NAME = "IPTVChannels"
 FILE_PATH = "TELEVISION.md"
 STATE_FILE = "last_sha.txt"
 
@@ -39,7 +39,7 @@ else:
 if latest_sha != last_sha:
     # Definimos el mensaje que verás en Slack
     texto_aviso = (
-        f"🚀 *¡Cambio detectado en TDTChannels!*\n"
+        f"🚀 *¡Cambio detectado en IPTVChannels!*\n"
         f"Se han actualizado canales en el archivo `{FILE_PATH}`.\n"
         f"Ver detalles del cambio: https://github.com/{REPO_OWNER}/{REPO_NAME}/commits/master/{FILE_PATH}"
     )
