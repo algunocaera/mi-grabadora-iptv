@@ -1,7 +1,7 @@
 name: Monitor IPTVChannels
 on:
   schedule:
-    - cron: '0 * * * *' # Se ejecuta cada hora
+    - cron: '15 * * * *' # Se ejecuta cada hora
   workflow_dispatch: # Permite ejecutarlo manualmente
 
 jobs:
