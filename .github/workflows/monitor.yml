@@ -1,7 +1,8 @@
 name: Monitor IPTVChannels
 on:
   schedule:
-    - cron: '15 * * * *' # Se ejecuta cada hora
+    # Cambiamos al minuto 27 para evitar las horas punta de tráfico en GitHub
+    - cron: '27 * * * *' 
   workflow_dispatch: # Permite ejecutarlo manualmente
 
 jobs:
@@ -19,7 +20,7 @@ jobs:
         run: pip install requests
         
       - name: Ejecutar script
-        env:          
+        env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python check_changes.py
         
@@ -28,5 +29,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add last_sha.txt
-          git commit -m "Actualizar SHA de TDTChannels" || exit 0
+          git commit -m "Actualizar memoria de cambios" || exit 0
           git push
