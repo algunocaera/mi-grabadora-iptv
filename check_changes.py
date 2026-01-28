@@ -61,7 +61,7 @@ def main():
             last_sha = ""
 
         # 2. Comparar: si el SHA de GitHub es distinto al guardado, hay novedad
-        if latest_sha != last_sha:
+        if True:
             print(f"🔔 ¡Cambio detectado! SHA nuevo: {latest_sha}")
             
             # Formateamos el mensaje para Slack con negritas y enlace
